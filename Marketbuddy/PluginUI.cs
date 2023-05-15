@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Numerics;
 using Dalamud.Interface;
 using ImGuiNET;
@@ -56,12 +56,12 @@ namespace Marketbuddy
                     ImGuiWindowFlags.NoScrollbar | ImGuiWindowFlags.NoResize | ImGuiWindowFlags.NoScrollWithMouse |
                     ImGuiWindowFlags.AlwaysAutoResize | ImGuiWindowFlags.NoTitleBar | ImGuiWindowFlags.NoBackground))
             {
-                if (ImGui.Checkbox("Limit stack size to ", ref conf.UseMaxStackSize))
+                if (ImGui.Checkbox("将物品堆叠大小限制为 ", ref conf.UseMaxStackSize))
                     conf.Save();
 
                 ImGui.SameLine();
                 ImGui.SetNextItemWidth(30);
-                if (ImGui.InputInt("items", ref conf.MaximumStackSize, 0))
+                if (ImGui.InputInt("物品", ref conf.MaximumStackSize, 0))
                     MaximumStackSizeChanged();
 
                 ImGui.SameLine();
@@ -83,7 +83,7 @@ namespace Marketbuddy
                 ImGui.SetNextItemWidth(40);
                 DrawUndercutTypeSelector();
                 ImGui.SameLine();
-                ImGui.Text("undercut");
+                ImGui.Text("低于最低价格");
             }
 
             ImGui.PopStyleVar(5);
@@ -94,7 +94,7 @@ namespace Marketbuddy
         {
             if (!SettingsVisible) return;
 
-            if (!ImGui.Begin("Marketbuddy config", ref _settingsVisible,
+            if (!ImGui.Begin("Marketbuddy设置", ref _settingsVisible,
                     ImGuiWindowFlags.NoResize | ImGuiWindowFlags.NoCollapse | ImGuiWindowFlags.NoScrollbar |
                     ImGuiWindowFlags.NoScrollWithMouse | ImGuiWindowFlags.AlwaysAutoResize))
             {
@@ -102,7 +102,7 @@ namespace Marketbuddy
                 return;
             }
 
-            if (ImGui.Checkbox("Open current prices list when adjusting a price", ref conf.AutoOpenComparePrices))
+            if (ImGui.Checkbox("自动查看价格并修改价格", ref conf.AutoOpenComparePrices))
             {
                 if (!conf.AutoOpenComparePrices)
                     conf.HoldShiftToStop = false;
@@ -112,23 +112,23 @@ namespace Marketbuddy
 
             DrawNestIndicator(1);
             if (ImGui.Checkbox(
-                    $"Holding SHIFT {(conf.AutoOpenComparePrices ? "prevents the above" : "does the above")}",
+                    $"按住SHIFT {(conf.AutoOpenComparePrices ? "阻止上述操作" : "阻止上述操作")}",
                     ref conf.HoldShiftToStop))
                 conf.Save();
 
 
             ImGui.Spacing();
-            if (ImGui.Checkbox("Holding CTRL pastes a price from the clipboard and confirms it",
+            if (ImGui.Checkbox("按住 CTRL 从剪切板粘贴价格并确认出售。",
                     ref conf.HoldCtrlToPaste))
                 conf.Save();
 
             ImGui.Spacing();
-            if (ImGui.Checkbox("Open price history together with current prices list", ref conf.AutoOpenHistory))
+            if (ImGui.Checkbox("查看当前价格时，打开市场中最近的交易履历。", ref conf.AutoOpenHistory))
                 conf.Save();
 
 
             DrawNestIndicator(1);
-            if (ImGui.Checkbox($"Holding ALT {(conf.AutoOpenHistory ? "prevents the above" : "does the above")}",
+            if (ImGui.Checkbox($"按住 ALT {(conf.AutoOpenHistory ? "阻止上述操作" : "阻止上述操作")}",
                     ref conf.HoldAltHistoryHandling))
                 conf.Save();
 
@@ -148,17 +148,17 @@ namespace Marketbuddy
             ImGui.SetNextItemWidth(55);
             DrawUndercutTypeSelector();
             ImGui.SameLine();
-            ImGui.TextUnformatted("undercut over the selected price");
+            ImGui.TextUnformatted("设定压价金额");
 
             DrawNestIndicator(1);
             if (ImGui.Checkbox(
-                    $"Clicking a price copies that price with a {GetUndercutText()} undercut to the clipboard",
+                    $"点击市场中的时价价格,将价格-{GetUndercutText()} 后复制到剪切板。",
                     ref conf.SaveToClipboard))
                 conf.Save();
 
             DrawNestIndicator(1);
             if (ImGui.Checkbox(
-                    $"Clicking a price sets your price as that price with a {GetUndercutText()} undercut",
+                    $"点击市场中的时价价格,将价格-{GetUndercutText()}后设定为你的价格",
                     ref conf.AutoInputNewPrice))
             {
                 if (!conf.AutoInputNewPrice)
@@ -169,7 +169,7 @@ namespace Marketbuddy
             DrawNestIndicator(2);
             if (!conf.AutoInputNewPrice) PushStyleDisabled();
             if (ImGui.Checkbox(
-                    "Closes the price list and confirms the new price after selecting it from the list",
+                    "选择市场中的时价价格后,关闭市场窗口并确认修改价格",
                     ref conf.AutoConfirmNewPrice))
             {
                 if (!conf.AutoInputNewPrice)
@@ -180,23 +180,23 @@ namespace Marketbuddy
             if (!conf.AutoInputNewPrice) PopStyleDisabled();
 
             ImGui.Spacing();
-            if (ImGui.Checkbox("Limit stack size to", ref conf.UseMaxStackSize))
+            if (ImGui.Checkbox("限制上架物品最大数量", ref conf.UseMaxStackSize))
                 conf.Save();
 
             ImGui.SameLine();
             ImGui.SetNextItemWidth(45);
-            if (ImGui.InputInt("items", ref conf.MaximumStackSize, 0))
+            if (ImGui.InputInt("个物品", ref conf.MaximumStackSize, 0))
                 MaximumStackSizeChanged();
 
             DrawNestIndicator(1);
-            if (ImGui.Checkbox("Adjust maximum stack size in retainer sell list UI",
+            if (ImGui.Checkbox("调整雇员的出售品列表(上架)最大堆叠数量的UI位置",
                     ref conf.AdjustMaxStackSizeInSellList))
                 conf.Save();
 
             if (conf.AdjustMaxStackSizeInSellList)
             {
                 DrawNestIndicator(2);
-                if (ImGui.DragFloat2("Position (relative to top left)", ref conf.AdjustMaxStackSizeInSellListOffset,
+                if (ImGui.DragFloat2("位置（相对于左上角）", ref conf.AdjustMaxStackSizeInSellListOffset,
                         1f, 1, float.MaxValue, "%.0f"))
                     conf.Save();
             }
@@ -208,8 +208,8 @@ namespace Marketbuddy
         {
             if (ImGui.BeginCombo("##undercuttype", conf.UndercutUsePercent ? "%" : "gil"))
             {
-                if (ImGui.Selectable("Fixed gil undercut")) conf.UndercutUsePercent = false;
-                if (ImGui.Selectable("Percentage undercut")) conf.UndercutUsePercent = true;
+                if (ImGui.Selectable("固定以低于多少金币的价格出售")) conf.UndercutUsePercent = false;
+                if (ImGui.Selectable("固定以低于多少百分比的价格出售")) conf.UndercutUsePercent = true;
                 ImGui.EndCombo();
             }
         }
